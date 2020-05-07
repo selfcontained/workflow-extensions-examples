@@ -1,4 +1,3 @@
-const https = require("https");
 const { App } = require("@slack/bolt");
 const { registerRandomStringStep } = require("./random-string-step");
 const { registerRandomUserStep } = require("./random-user-step");
