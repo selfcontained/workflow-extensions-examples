@@ -1,0 +1,19 @@
+{
+  "name": "workflow-extensions-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "source ./.env_dev && nodemon index.js",
+    "start": "source ./.env && nodemon index.js"
+  },
+  "author": "Brad Harris",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.get": "^4.4.2",
+    "@slack/bolt": "git://github.com/selfcontained/bolt.git#c29b824"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
