@@ -22,6 +22,8 @@ app.error((error) => {
   console.error(error, JSON.stringify(error && error.data));
 });
 
+app.receiver.app.get("/", (req, res) => res.send({ ok: true }));
+
 (async () => {
   // Start your app
   const port = process.env.PORT || 3000;
