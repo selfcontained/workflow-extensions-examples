@@ -72,6 +72,11 @@ exports.registerRandomStringStep = function (app) {
       });
     }
 
+    // Soooper secret way to test what happens when the step doesn't call workflows.updateSte
+    if (strings[0] === "burpadurp") {
+      return;
+    }
+
     // construct payload for updating the step
     const params = {
       token: context.botToken,
