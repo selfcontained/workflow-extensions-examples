@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "source ./.env_dev && nodemon index.js",
-    "start": "source ./.env && nodemon index.js"
+    "dev": "source ./.env && nodemon index.js",
+    "start": "node index.js"
   },
   "author": "Brad Harris",
   "license": "MIT",
