@@ -6,13 +6,11 @@ const renderStepConfig = function (state = {}) {
     // View identifier
     callback_id: VIEW_CALLBACK_ID,
     blocks: renderBlocks(state),
-    // Push the state into metadata to have access on view_submission (being kinda lazy and putting more than needed in here)
-    private_metadata: JSON.stringify(state),
   };
 };
 
 // return blocks for the main form
-const renderBlocks = function ({ strings = [], user }) {
+const renderBlocks = function ({ strings = [] }) {
   const blocks = [
     {
       type: "section",
@@ -97,19 +95,3 @@ const renderBlocks = function ({ strings = [], user }) {
 };
 
 exports.renderStepConfig = renderStepConfig;
-
-exports.serializeStateForView = (state = {}) => {
-  return JSON.stringify(state);
-};
-
-exports.parseStateFromView = (view) => {
-  let state = {};
-
-  try {
-    state = JSON.parse(view.private_metadata);
-  } catch (e) {
-    console.log(e);
-  }
-
-  return state;
-};

@@ -1,23 +1,22 @@
 const get = require("lodash.get");
 const { STEP_CALLBACK_ID, VIEW_CALLBACK_ID } = require("./constants");
-const { renderStepConfig, parseStateFromView } = require("./view");
+const { renderStepConfig } = require("./view");
 
 exports.registerRandomStringStep = function (app) {
   // Register step config action
   app.action(
     {
-      type: "workflow_step_action",
+      type: "workflow_step_edit",
       callback_id: STEP_CALLBACK_ID,
     },
     async ({ body, ack, context }) => {
       app.logger.info("body: ", JSON.stringify(body, null, 2));
       ack();
 
-      const { workflow_step: { context_id, inputs = {} } = {} } = body;
+      const { workflow_step: { inputs = {} } = {} } = body;
 
       // Setup block kit ui state from current config
       const state = {
-        context_id,
         strings: get(inputs, "strings.value", []),
       };
 
@@ -32,10 +31,7 @@ exports.registerRandomStringStep = function (app) {
 
   // Handle saving of step config
   app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
-    // Pull out any values from our view's state that we need that aren't part of the view submission
-    const { context_id } = parseStateFromView(view);
-
-    app.logger.info("view submission values", view.state.values);
+    const workflowStepEditId = get(view, `workflow_step_edit_id`);
 
     const text1 = get(view, `state.values.text_1.text_1.value`);
     const text2 = get(view, `state.values.text_2.text_2.value`);
@@ -59,7 +55,7 @@ exports.registerRandomStringStep = function (app) {
     };
 
     const errors = {};
-    app.logger.info("Strings", strings);
+
     // Ensure we have at least 1 value, if not, attach an error to the first input block
     if (strings.length === 0) {
       errors.text_1 = "Please provide at least one string";
@@ -77,11 +73,15 @@ exports.registerRandomStringStep = function (app) {
       return;
     }
 
-    // construct payload for updating the step
+    // ack the view submission, we're all good there
+    ack();
+
+    // Now we need to update the step
+    // Construct payload for updating the step
     const params = {
       token: context.botToken,
       workflow_step: {
-        context_id,
+        workflow_step_edit_id: workflowStepEditId,
         inputs,
         outputs: [
           {
@@ -93,12 +93,10 @@ exports.registerRandomStringStep = function (app) {
       },
     };
 
+    app.logger.info("updateStep params: ", params);
+
     // Call the api to save our step config - we do this prior to the ack of the view_submission
     try {
-      app.logger.info(
-        "Updating step",
-        JSON.stringify(params.workflow_step, null, 2)
-      );
       await app.client.apiCall("workflows.updateStep", params);
     } catch (e) {
       app.logger.error("error updating step: ", e.message);
@@ -110,12 +108,10 @@ exports.registerRandomStringStep = function (app) {
         },
       });
     }
-
-    ack();
   });
 
   // Handle running the step
-  app.event("workflow_step_started", async ({ event, context }) => {
+  app.event("workflow_step_execute", async ({ event, context }) => {
     app.logger.info("event: ", JSON.stringify(event, null, 2));
 
     const { callback_id, workflow_step = {} } = event;
@@ -128,12 +124,9 @@ exports.registerRandomStringStep = function (app) {
       return;
     }
 
-    const { inputs = {}, context_id = "" } = workflow_step;
+    const { inputs = {}, workflow_step_execute_id } = workflow_step;
     const { strings = {} } = inputs;
     const values = strings.value || [];
-
-    console.log("callback_id", callback_id);
-    // TODO: If we have no strings call stepFailed
 
     // Grab a random string
     var randomString = values[Math.floor(Math.random() * values.length)];
@@ -142,7 +135,7 @@ exports.registerRandomStringStep = function (app) {
     try {
       await app.client.apiCall("workflows.stepCompleted", {
         token: context.botToken,
-        context_id,
+        workflow_step_execute_id,
         outputs: {
           random_string: randomString || "",
         },
