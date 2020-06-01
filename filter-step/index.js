@@ -15,18 +15,16 @@ exports.registerFilterStep = function (app) {
   // Register step config action
   app.action(
     {
-      type: "workflow_step_action",
+      type: "workflow_step_edit",
       callback_id: STEP_CALLBACK_ID,
     },
     async ({ body, ack, context }) => {
-      app.logger.info("body: ", JSON.stringify(body, null, 2));
       ack();
 
-      const { workflow_step: { context_id, inputs = {} } = {} } = body;
+      const { workflow_step: { inputs = {} } = {} } = body;
 
       // Setup block kit ui state from current config
       const state = {
-        context_id,
         value1: get(inputs, "value1.value", ""),
         value2: get(inputs, "value2.value", ""),
         comparator: get(inputs, "comparator.value", ""),
@@ -45,13 +43,12 @@ exports.registerFilterStep = function (app) {
   // handle the radio button toggle action and store the state in the view's private_metadata
   app.action("carryon", async ({ ack, body, action, context }) => {
     await ack();
-    app.logger.info("action body: ", body, action);
 
-    const { view, trigger_id } = body;
+    const { view } = body;
     // value is a string-boolean / default to true
     const carryon = get(action, "selected_option.value", "true") !== "false";
     const state = parseStateFromView(view);
-    app.logger.info("view state: ", view.state.values);
+
     const updatedState = {
       ...state,
       carryon,
@@ -65,12 +62,11 @@ exports.registerFilterStep = function (app) {
     };
 
     try {
-      const result = await app.client.views.update({
+      await app.client.views.update({
         token: context.botToken,
         view_id: view.id,
         view: updatedView,
       });
-      app.logger.info("view updated:", result);
     } catch (error) {
       app.logger.error(error);
     }
@@ -79,13 +75,9 @@ exports.registerFilterStep = function (app) {
   // Handle saving of step config
   app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
     // Pull out any values from our view's state that we need that aren't part of the view submission
-    const { context_id, carryon } = parseStateFromView(view);
+    const { carryon } = parseStateFromView(view);
 
-    app.logger.info(
-      "view submission values",
-      JSON.stringify(view.state.values, null, 2)
-    );
-
+    const workflowStepEditId = get(view, `workflow_step_edit_id`);
     const value1 = get(view, `state.values.value1.value1.value`);
     const comparator = get(
       view,
@@ -109,7 +101,6 @@ exports.registerFilterStep = function (app) {
     };
 
     const errors = {};
-    app.logger.info("Inputs", inputs);
 
     if (!inputs.value1.value) {
       errors.value1 = "Please provide a first value";
@@ -128,52 +119,40 @@ exports.registerFilterStep = function (app) {
       });
     }
 
+    // ack the view submission, we're all good there
+    ack();
+
     // construct payload for updating the step
     const params = {
       token: context.botToken,
       workflow_step: {
-        context_id,
+        workflow_step_edit_id: workflowStepEditId,
         inputs,
         outputs: [],
       },
     };
 
+    app.logger.info(
+      "Updating step",
+      JSON.stringify(params.workflow_step, null, 2)
+    );
+
     // Call the api to save our step config - we do this prior to the ack of the view_submission
     try {
-      app.logger.info(
-        "Updating step",
-        JSON.stringify(params.workflow_step, null, 2)
-      );
       await app.client.apiCall("workflows.updateStep", params);
     } catch (e) {
       app.logger.error("error updating step: ", e.message);
-
-      return ack({
-        response_action: "errors",
-        errors: {
-          ["value1"]: e.message,
-        },
-      });
     }
-
-    ack();
   });
 
   // Handle running the step
-  app.event("workflow_step_started", async ({ event, context }) => {
-    app.logger.info("event: ", JSON.stringify(event, null, 2));
-
+  app.event("workflow_step_execute", async ({ event, context }) => {
     const { callback_id, workflow_step = {} } = event;
     if (callback_id !== STEP_CALLBACK_ID) {
-      app.logger.info(
-        "ignoring callback id for step listener",
-        callback_id,
-        STEP_CALLBACK_ID
-      );
       return;
     }
 
-    const { inputs = {}, context_id = "" } = workflow_step;
+    const { inputs = {}, workflow_step_execute_id } = workflow_step;
     const { value1, comparator, value2, carryon } = inputs;
     const haltOnMatch = !carryon.value;
 
@@ -197,7 +176,7 @@ exports.registerFilterStep = function (app) {
       try {
         await app.client.apiCall("workflows.stepCompleted", {
           token: context.botToken,
-          context_id,
+          workflow_step_execute_id,
         });
 
         app.logger.info("step completed");

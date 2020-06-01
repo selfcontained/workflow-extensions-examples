@@ -1,23 +1,21 @@
 const get = require("lodash.get");
 const { STEP_CALLBACK_ID, VIEW_CALLBACK_ID } = require("./constants");
-const { renderStepConfig, parseStateFromView } = require("./view");
+const { renderStepConfig } = require("./view");
 
 exports.registerConversationTestStep = function (app) {
   // Register step config action
   app.action(
     {
-      type: "workflow_step_action",
+      type: "workflow_step_edit",
       callback_id: STEP_CALLBACK_ID,
     },
     async ({ body, ack, context }) => {
-      app.logger.info("body: ", JSON.stringify(body, null, 2));
       ack();
 
-      const { workflow_step: { context_id, inputs = {} } = {} } = body;
+      const { workflow_step: { inputs = {} } = {} } = body;
 
       // Setup block kit ui state from current config
       const state = {
-        context_id,
         no_filter: get(inputs, "no_filter.value"),
         im_only: get(inputs, "im_only.value"),
         public_private: get(inputs, "public_private.value"),
@@ -36,10 +34,7 @@ exports.registerConversationTestStep = function (app) {
 
   // Handle saving of step config
   app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
-    // Pull out any values from our view's state that we need that aren't part of the view submission
-    const { context_id } = parseStateFromView(view);
-
-    app.logger.info("view submission values", view.state.values);
+    const workflowStepEditId = get(view, `workflow_step_edit_id`);
 
     const inputs = {
       no_filter: {
@@ -80,54 +75,43 @@ exports.registerConversationTestStep = function (app) {
       });
     }
 
+    // ack the view submission, we're all good there
+    ack();
+
     // construct payload for updating the step
     const params = {
       token: context.botToken,
       workflow_step: {
-        context_id,
+        workflow_step_edit_id: workflowStepEditId,
         inputs,
         outputs: [],
       },
     };
 
+    app.logger.info("Updating step", params.workflow_step);
+
     // Call the api to save our step config - we do this prior to the ack of the view_submission
     try {
-      app.logger.info("Updating step", params.workflow_step);
       await app.client.apiCall("workflows.updateStep", params);
     } catch (e) {
       app.logger.error("error updating step: ", e.message);
-
-      return ack({
-        response_action: "errors",
-        errors: {
-          ["no_filter"]: e.message,
-        },
-      });
     }
-
-    ack();
   });
 
   // Handle running the step
-  app.event("workflow_step_started", async ({ event, context }) => {
+  app.event("workflow_step_execute", async ({ event, context }) => {
     const { callback_id, workflow_step = {} } = event;
     if (callback_id !== STEP_CALLBACK_ID) {
-      app.logger.info(
-        "ignoring callback id for step listener",
-        callback_id,
-        STEP_CALLBACK_ID
-      );
       return;
     }
 
-    app.logger.info("event: ", JSON.stringify(event, null, 2));
-    const { context_id = "" } = workflow_step;
+    const { workflow_step_execute_id } = workflow_step;
 
     // Report back that the step completed
     try {
       await app.client.apiCall("workflows.stepCompleted", {
         token: context.botToken,
-        context_id,
+        workflow_step_execute_id,
       });
 
       app.logger.info("step completed", callback_id);

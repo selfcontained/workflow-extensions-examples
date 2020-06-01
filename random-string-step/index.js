@@ -10,7 +10,6 @@ exports.registerRandomStringStep = function (app) {
       callback_id: STEP_CALLBACK_ID,
     },
     async ({ body, ack, context }) => {
-      app.logger.info("body: ", JSON.stringify(body, null, 2));
       ack();
 
       const { workflow_step: { inputs = {} } = {} } = body;
@@ -100,27 +99,13 @@ exports.registerRandomStringStep = function (app) {
       await app.client.apiCall("workflows.updateStep", params);
     } catch (e) {
       app.logger.error("error updating step: ", e.message);
-
-      return ack({
-        response_action: "errors",
-        errors: {
-          ["text_1"]: e.message,
-        },
-      });
     }
   });
 
   // Handle running the step
   app.event("workflow_step_execute", async ({ event, context }) => {
-    app.logger.info("event: ", JSON.stringify(event, null, 2));
-
     const { callback_id, workflow_step = {} } = event;
     if (callback_id !== STEP_CALLBACK_ID) {
-      app.logger.info(
-        "ignoring callback id for step listener",
-        callback_id,
-        STEP_CALLBACK_ID
-      );
       return;
     }
 
