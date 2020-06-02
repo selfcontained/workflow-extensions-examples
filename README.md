@@ -7,7 +7,7 @@ This runs a slack app that contains a few examples of workflow steps. It's meant
 3. Necessary scopes are added automatically when you enable workflow steps
 4. You must enable Interactivity and Events, and add the required request URL for both (https://your-domain.ngrok.io/slack/events if you're using ngrok). Make sure to also subscribe to the `workflow_step_execute` bot event.
 5. Install (or reinstall) your app in the workspace.
-6. Optional - This app includes a `Update your Slack Status step` that requires some OAuth configuration. If you want to enable this step, make sure to do the following
+6. Optional - This app includes a `Update your Slack Status step` that requires some OAuth configuration. If you want this step to work, make sure to do the following, otherwise, you can disabled by commenting out some code mentioned below in this readme.
  * Add the `users:read` bot scope
  * Add the `users.profile:write` user scope
  * Add a redirect url that is your apps publicly addressible domain, i.e. https://your-domian.ngrok.io if you're using ngrok.
@@ -28,14 +28,15 @@ npm start
 You'll need to create a `.env` file with the following values to get things working correctly.  Some of them you'll need grab from your Slack app you created earlier.
 
 ```
-export HOST='https://berad.ngrok.io'
-export REDIS_URL='redis://your-redis-connection-params'
 export PORT='3000'
 export SLACK_CLIENT_ID='<client-id>'
 export SLACK_CLIENT_SECRET='<client-secret>'
 export SLACK_SIGNING_SECRET='<signing-secret>'
 export SLACK_VERIFICATION_TOKEN='<verification-token>'
 export SLACK_BOT_TOKEN='<xoxb-bot-token>'
+# These variables are only needed if you want the Update your Slack Status step to work
+export HOST='https://berad.ngrok.io'
+export REDIS_URL='redis://your-redis-connection-params'
 ```
 
 
@@ -43,3 +44,14 @@ export SLACK_BOT_TOKEN='<xoxb-bot-token>'
 
 * Feel free to remove/replace/update any of the examples steps in here.  Most likely you'll want to setup a new one using your step's `callback_id` value that you added to your app.
 * Start your slack app w/ `npm run dev`
+
+### Update Slack Status Step
+There's a more advanced step included in this app that will udpate a configured user's Slack status.  This requires some OAuth configuration and a Redis instance to persist some tokens.  If you would rather not bother with that complexity, you can comment out the import and registration of the step in the top level `index.js` file:
+
+```js
+// import { registerUpdateSlackStatusStep } from "./update-slack-status-step/index.js";
+
+//....
+
+// registerUpdateSlackStatusStep(app);
+```
