@@ -1,8 +1,8 @@
-const get = require("lodash.get");
-const { STEP_CALLBACK_ID, VIEW_CALLBACK_ID } = require("./constants");
-const { renderStepConfig } = require("./view");
+import get from "lodash.get";
+import { STEP_CALLBACK_ID, VIEW_CALLBACK_ID } from "./constants.js";
+import { renderStepConfig } from "./view.js";
 
-exports.registerRandomStringStep = function (app) {
+export const registerRandomStringStep = function (app) {
   // Register step config action
   app.action(
     {

@@ -1,6 +1,6 @@
-const { VIEW_CALLBACK_ID } = require("./constants");
+import { VIEW_CALLBACK_ID } from "./constants.js";
 
-const renderStepConfig = function (state = {}) {
+export const renderStepConfig = function (state = {}) {
   return {
     type: "workflow_step",
     // View identifier
@@ -93,5 +93,3 @@ const renderBlocks = function ({ users = [] }) {
 
   return blocks;
 };
-
-exports.renderStepConfig = renderStepConfig;

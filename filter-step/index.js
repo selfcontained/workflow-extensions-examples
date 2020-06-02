@@ -1,17 +1,17 @@
-const get = require("lodash.get");
-const {
+import get from "lodash.get";
+import {
   STEP_CALLBACK_ID,
   VIEW_CALLBACK_ID,
   CONTAINS,
   EQUALS,
-} = require("./constants");
-const {
+} from "./constants.js";
+import {
   renderStepConfig,
   parseStateFromView,
   serializeStateForView,
-} = require("./view");
+} from "./view.js";
 
-exports.registerFilterStep = function (app) {
+export const registerFilterStep = function (app) {
   // Register step config action
   app.action(
     {

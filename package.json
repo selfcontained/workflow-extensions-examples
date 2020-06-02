@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "source ./.env && nodemon index.js",
     "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "author": "Brad Harris",
   "license": "MIT",

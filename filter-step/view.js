@@ -1,6 +1,6 @@
-const { VIEW_CALLBACK_ID, EQUALS, CONTAINS } = require("./constants");
+import { VIEW_CALLBACK_ID, EQUALS, CONTAINS } from "./constants.js";
 
-const renderStepConfig = function (state = {}) {
+export const renderStepConfig = function (state = {}) {
   return {
     type: "workflow_step",
     // View identifier
@@ -125,11 +125,11 @@ const renderBlocks = function ({
   return blocks;
 };
 
-const serializeStateForView = (state = {}) => {
+export const serializeStateForView = (state = {}) => {
   return JSON.stringify(state);
 };
 
-const parseStateFromView = (view) => {
+export const parseStateFromView = (view) => {
   let state = {};
 
   try {
@@ -140,7 +140,3 @@ const parseStateFromView = (view) => {
 
   return state;
 };
-
-exports.renderStepConfig = renderStepConfig;
-exports.serializeStateForView = serializeStateForView;
-exports.parseStateFromView = parseStateFromView;
