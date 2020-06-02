@@ -1,10 +1,10 @@
 import { default as Bolt } from "@slack/bolt";
-import { registerUpdateSlackStatusStep } from "./update-slack-status-step/index.js";
 import { registerRandomStringStep } from "./random-string-step/index.js";
 import { registerRandomUserStep } from "./random-user-step/index.js";
 import { registerRandomChannelStep } from "./random-channel-step/index.js";
 import { registerConversationTestStep } from "./conversation-test-step/index.js";
 import { registerFilterStep } from "./filter-step/index.js";
+import { registerUpdateSlackStatusStep } from "./update-slack-status-step/index.js";
 
 // Initializes your app with your bot token and signing secret
 const app = new Bolt.App({

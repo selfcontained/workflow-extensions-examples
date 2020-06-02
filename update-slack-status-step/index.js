@@ -88,8 +88,8 @@ export const registerUpdateSlackStatusStep = function (app) {
       if (!userId || !userToken) {
         const oauthState = {
           externalViewId,
-          userId,
-          teamId,
+          userId: currentUserId,
+          teamId: currentTeamId,
         };
 
         view = renderWorkflowStep(
