@@ -195,7 +195,23 @@ export const registerUpdateSlackStatusStep = function (app, data) {
       token: context.botToken,
       workflow_step_edit_id: workflowStepEditId,
       inputs,
-      outputs: [],
+      outputs: [
+        {
+          type: "user",
+          name: "status_user",
+          label: `User who's status was updated`,
+        },
+        {
+          type: "text",
+          name: "status_text",
+          label: `Updated status text`,
+        },
+        {
+          type: "text",
+          name: "status_emoji",
+          label: `Updated status emoji`,
+        },
+      ],
     };
 
     app.logger.info("Updating step", params);
@@ -216,17 +232,20 @@ export const registerUpdateSlackStatusStep = function (app, data) {
     }
 
     const { inputs = {}, workflow_step_execute_id } = workflow_step;
-    const { status_text, status_emoji, credential_id } = inputs;
+    const { status_text, status_emoji, user_id, credential_id } = inputs;
 
     try {
       // Get the credential for the api call
       const userToken = await data.get(credential_id.value);
 
+      const statusText = status_text.value || "";
+      const statusEmoji = status_emoji.value || "";
+
       await app.client.users.profile.set({
         token: userToken,
         profile: {
-          status_text: status_text.value || "",
-          status_emoji: status_emoji.value || "",
+          status_text: statusText,
+          status_emoji: statusEmoji,
         },
       });
 
@@ -234,6 +253,11 @@ export const registerUpdateSlackStatusStep = function (app, data) {
       await app.client.apiCall("workflows.stepCompleted", {
         token: context.botToken,
         workflow_step_execute_id,
+        outputs: {
+          status_user: user_id.value,
+          status_text: statusText,
+          status_emoji: statusEmoji,
+        },
       });
 
       app.logger.info("step completed", status_text.value, status_emoji.value);
