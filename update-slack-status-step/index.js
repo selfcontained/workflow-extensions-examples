@@ -1,4 +1,5 @@
 import get from "lodash.get";
+import { configureData } from "./data.js";
 import { configureOauth, buildOAuthURL } from "./oauth.js";
 import {
   STEP_CALLBACK_ID,
@@ -17,8 +18,11 @@ import {
   getConnectAccountViewId,
 } from "./view.js";
 
-export const registerUpdateSlackStatusStep = function (app, data) {
-  // This step requires an oauth flow
+export const registerUpdateSlackStatusStep = function (app) {
+  // This step requires an oauth flow and data layer
+  const data = configureData(app);
+  data.on("error", (err) => app.logger.error("Connection Error", err));
+
   configureOauth(app, data);
 
   // Register step config action
