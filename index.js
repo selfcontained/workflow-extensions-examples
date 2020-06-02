@@ -1,4 +1,6 @@
 import { default as Bolt } from "@slack/bolt";
+import { configureData } from "./data/index.js";
+import { registerUpdateSlackStatusStep } from "./update-slack-status-step/index.js";
 import { registerRandomStringStep } from "./random-string-step/index.js";
 import { registerRandomUserStep } from "./random-user-step/index.js";
 import { registerRandomChannelStep } from "./random-channel-step/index.js";
@@ -10,6 +12,12 @@ const app = new Bolt.App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
+
+const data = configureData(app);
+
+data.on("error", (err) => app.logger.error("Connection Error", err));
+
+registerUpdateSlackStatusStep(app, data);
 
 registerRandomStringStep(app);
 registerRandomUserStep(app);

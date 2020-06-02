@@ -88,20 +88,18 @@ export const registerRandomChannelStep = function (app) {
     // construct payload for updating the step
     const params = {
       token: context.botToken,
-      workflow_step: {
-        workflow_step_edit_id: workflowStepEditId,
-        inputs,
-        outputs: [
-          {
-            name: "random_channel",
-            type: "channel",
-            label: "Random Channel",
-          },
-        ],
-      },
+      workflow_step_edit_id: workflowStepEditId,
+      inputs,
+      outputs: [
+        {
+          name: "random_channel",
+          type: "channel",
+          label: "Random Channel",
+        },
+      ],
     };
 
-    app.logger.info("Updating step", params.workflow_step);
+    app.logger.info("Updating step", params);
 
     // Call the api to save our step config - we do this prior to the ack of the view_submission
     try {

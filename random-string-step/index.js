@@ -79,17 +79,15 @@ export const registerRandomStringStep = function (app) {
     // Construct payload for updating the step
     const params = {
       token: context.botToken,
-      workflow_step: {
-        workflow_step_edit_id: workflowStepEditId,
-        inputs,
-        outputs: [
-          {
-            name: "random_string",
-            type: "text",
-            label: "Random String",
-          },
-        ],
-      },
+      workflow_step_edit_id: workflowStepEditId,
+      inputs,
+      outputs: [
+        {
+          name: "random_string",
+          type: "text",
+          label: "Random String",
+        },
+      ],
     };
 
     app.logger.info("updateStep params: ", params);

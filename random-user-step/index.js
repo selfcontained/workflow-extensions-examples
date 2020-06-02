@@ -73,17 +73,15 @@ export const registerRandomUserStep = function (app) {
     // construct payload for updating the step
     const params = {
       token: context.botToken,
-      workflow_step: {
-        workflow_step_edit_id: workflowStepEditId,
-        inputs,
-        outputs: [
-          {
-            name: "random_user",
-            type: "user",
-            label: "Random User",
-          },
-        ],
-      },
+      workflow_step_edit_id: workflowStepEditId,
+      inputs,
+      outputs: [
+        {
+          name: "random_user",
+          type: "user",
+          label: "Random User",
+        },
+      ],
     };
 
     app.logger.info("updateStep params: ", params);
