@@ -20,11 +20,6 @@ This runs a slack app that contains a few examples of workflow steps. It's meant
 
 ### Environment Variables
 
-```
-// sources a .env file
-npm start 
-```
-
 You'll need to create a `.env` file with the following values to get things working correctly.  Some of them you'll need grab from your Slack app you created earlier.
 
 ```
