@@ -34,7 +34,15 @@ export const registerUpdateSlackStatusStep = function (app) {
     async ({ body, ack, context }) => {
       ack();
 
-      const { workflow_step: { inputs = {} } = {}, user, team } = body;
+      const {
+        workflow_step: {
+          inputs = {},
+          workflow_id: workflowId,
+          step_id: stepId,
+        } = {},
+        user,
+        team,
+      } = body;
 
       const currentUserId = user.id;
       const currentTeamId = team.id;
@@ -80,6 +88,8 @@ export const registerUpdateSlackStatusStep = function (app) {
 
       // Need a custom view id so we can update it in our oauth callback
       const externalViewId = getConnectAccountViewId({
+        workflowId,
+        stepId,
         userId: currentUserId,
         teamId: currentTeamId,
       });
