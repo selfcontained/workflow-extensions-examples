@@ -91,7 +91,6 @@ export const registerUpdateSlackStatusStep = function (app) {
         workflowId,
         stepId,
         userId: currentUserId,
-        teamId: currentTeamId,
       });
 
       // Render connect account view
