@@ -48,9 +48,8 @@ export const renderConnectAccount = ({ oauthURL }) => {
   return blocks;
 };
 
-// TODO: replace this w/ the workflow_step_id instead once available
 export const getConnectAccountViewId = ({ userId, workflowId, stepId }) => {
-  return `connect_${workflowId}_${stepId}_${userId}`;
+  return `connect_${workflowId}_${stepId}_${userId}_${Date.now()}`;
 };
 
 // return blocks for the main form
