@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "lodash.get": "^4.4.2",
-    "@slack/bolt": "git://github.com/selfcontained/bolt.git#364feb0",
+    "@slack/bolt": "git://github.com/selfcontained/bolt.git#d4ec38c",
     "redis": "^3.0.2"
   },
   "devDependencies": {
