@@ -29,8 +29,8 @@ export const registerRandomStringStep = function (app) {
   );
 
   // Handle saving of step config
-  app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
-    const workflowStepEditId = get(view, `workflow_step_edit_id`);
+  app.view(VIEW_CALLBACK_ID, async ({ ack, view, body, context }) => {
+    const workflowStepEditId = get(body, `workflow_step.workflow_step_edit_id`);
 
     const text1 = get(view, `state.values.text_1.text_1.value`);
     const text2 = get(view, `state.values.text_2.text_2.value`);
@@ -101,7 +101,7 @@ export const registerRandomStringStep = function (app) {
   });
 
   // Handle running the step
-  app.event("workflow_step_execute", async ({ event, context }) => {
+  app.event("workflow_step_execute", async ({ event, body, context }) => {
     const { callback_id, workflow_step = {} } = event;
     if (callback_id !== STEP_CALLBACK_ID) {
       return;

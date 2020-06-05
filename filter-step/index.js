@@ -73,11 +73,11 @@ export const registerFilterStep = function (app) {
   });
 
   // Handle saving of step config
-  app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
+  app.view(VIEW_CALLBACK_ID, async ({ ack, view, body, context }) => {
     // Pull out any values from our view's state that we need that aren't part of the view submission
     const { carryon } = parseStateFromView(view);
 
-    const workflowStepEditId = get(view, `workflow_step_edit_id`);
+    const workflowStepEditId = get(body, `workflow_step.workflow_step_edit_id`);
     const value1 = get(view, `state.values.value1.value1.value`);
     const comparator = get(
       view,

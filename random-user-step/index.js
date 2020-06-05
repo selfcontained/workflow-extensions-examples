@@ -29,8 +29,8 @@ export const registerRandomUserStep = function (app) {
   );
 
   // Handle saving of step config
-  app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
-    const workflowStepEditId = get(view, `workflow_step_edit_id`);
+  app.view(VIEW_CALLBACK_ID, async ({ ack, view, body, context }) => {
+    const workflowStepEditId = get(body, `workflow_step.workflow_step_edit_id`);
 
     const user1 = get(view, `state.values.user_1.user_1.selected_user`);
     const user2 = get(view, `state.values.user_2.user_2.selected_user`);

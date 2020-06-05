@@ -33,8 +33,8 @@ export const registerConversationTestStep = function (app) {
   );
 
   // Handle saving of step config
-  app.view(VIEW_CALLBACK_ID, async ({ ack, view, context }) => {
-    const workflowStepEditId = get(view, `workflow_step_edit_id`);
+  app.view(VIEW_CALLBACK_ID, async ({ ack, view, body, context }) => {
+    const workflowStepEditId = get(body, `workflow_step.workflow_step_edit_id`);
 
     const inputs = {
       no_filter: {

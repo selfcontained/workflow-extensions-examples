@@ -155,7 +155,7 @@ export const registerUpdateSlackStatusStep = function (app) {
   app.view(VIEW_CALLBACK_ID, async ({ ack, view, body, context }) => {
     // Pull out any values from our view's state that we need that aren't part of the view submission
     const { userId, credentialId } = parseStateFromView(view);
-    const workflowStepEditId = get(view, `workflow_step_edit_id`);
+    const workflowStepEditId = get(body, `workflow_step.workflow_step_edit_id`);
 
     const statusText = get(
       view,
