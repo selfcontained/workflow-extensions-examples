@@ -14,8 +14,10 @@
   "author": "Brad Harris",
   "license": "MIT",
   "dependencies": {
-    "lodash.get": "^4.4.2",
+    "@azure/cognitiveservices-imagesearch": "^3.0.0",
+    "@azure/ms-rest-azure-js": "^2.0.1",
     "@slack/bolt": "git://github.com/selfcontained/bolt.git#d4ec38c",
+    "lodash.get": "^4.4.2",
     "redis": "^3.0.2"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ import { registerRandomChannelStep } from "./random-channel-step/index.js";
 import { registerConversationTestStep } from "./conversation-test-step/index.js";
 import { registerFilterStep } from "./filter-step/index.js";
 import { registerUpdateSlackStatusStep } from "./update-slack-status-step/index.js";
+import { registerImageSearchStep } from "./image-search-step/index.js";
 
 // Initializes your app with your bot token and signing secret
 const app = new Bolt.App({
@@ -18,6 +19,7 @@ registerRandomChannelStep(app);
 registerFilterStep(app);
 registerConversationTestStep(app);
 registerUpdateSlackStatusStep(app);
+registerImageSearchStep(app);
 
 app.error((error) => {
   // Check the details of the error to handle cases where you should retry sending a message or stop the app
