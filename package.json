@@ -16,7 +16,7 @@
   "dependencies": {
     "@azure/cognitiveservices-imagesearch": "^3.0.0",
     "@azure/ms-rest-azure-js": "^2.0.1",
-    "@slack/bolt": "git://github.com/selfcontained/bolt.git#22bcdfb",
+    "@slack/bolt": "^2.1.1-workflowStepsBeta.1",
     "lodash.get": "^4.4.2",
     "redis": "^3.0.2"
   },
