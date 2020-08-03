@@ -88,7 +88,12 @@ export const registerRandomStringStep = function (app) {
           label: "Random String",
         },
       ],
+      step_name: `Pick 1 of ${strings.length} strings`,
     };
+
+    if (!!strings[4]) {
+      params.step_image_url = strings[4];
+    }
 
     app.logger.info("updateStep params: ", params);
 
