@@ -91,8 +91,9 @@ export const registerRandomStringStep = function (app) {
       step_name: `Pick 1 of ${strings.length} strings`,
     };
 
-    if (!!strings[4]) {
-      params.step_image_url = strings[4];
+    // Hack to test different urls
+    if (!!text5) {
+      params.step_image_url = text5;
     }
 
     app.logger.info("updateStep params: ", params);
