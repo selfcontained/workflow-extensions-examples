@@ -6,7 +6,16 @@ import {
 
 export const renderStepConfig = function (state = {}) {
   return {
-    type: "workflow_step",
+    type: "modal",
+    title: {
+      type: "plain_text",
+      text: "A Modal in WB?",
+    },
+    submit: {
+      type: "plain_text",
+      text: "Save It",
+    },
+    // type: "workflow_step",
     // View identifier
     callback_id: VIEW_CALLBACK_ID,
     blocks: renderBlocks(state),
@@ -21,6 +30,23 @@ const renderBlocks = function ({ searchTerm = "" }) {
       text: {
         type: "mrkdwn",
         text: "Nothing to see here, just save",
+      },
+    },
+    {
+      type: "input",
+      optional: false,
+      block_id: "text_tester",
+      element: {
+        type: "plain_text_input",
+        action_id: "text_tester",
+      },
+      label: {
+        type: "plain_text",
+        text: "Five",
+      },
+      hint: {
+        type: "plain_text",
+        text: "This is some hint text",
       },
     },
   ];
