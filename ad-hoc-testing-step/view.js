@@ -6,19 +6,11 @@ import {
 
 export const renderStepConfig = function (state = {}) {
   return {
-    type: "modal",
-    title: {
-      type: "plain_text",
-      text: "A Modal in WB?",
-    },
-    submit: {
-      type: "plain_text",
-      text: "Save It",
-    },
-    // type: "workflow_step",
-    // View identifier
+    type: "workflow_step",
     callback_id: VIEW_CALLBACK_ID,
     blocks: renderBlocks(state),
+    // testing out disabling the submit button
+    submit_disabled: true,
   };
 };
 
@@ -33,21 +25,15 @@ const renderBlocks = function ({ searchTerm = "" }) {
       },
     },
     {
-      type: "input",
-      optional: false,
-      block_id: "text_tester",
-      element: {
-        type: "plain_text_input",
-        action_id: "text_tester",
-      },
-      label: {
+      type: "image",
+      title: {
         type: "plain_text",
-        text: "Five",
+        text: "I Need a Marg",
+        emoji: true,
       },
-      hint: {
-        type: "plain_text",
-        text: "This is some hint text",
-      },
+      image_url:
+        "https://assets3.thrillist.com/v1/image/1682388/size/tl-horizontal_main.jpg",
+      alt_text: "marg",
     },
   ];
 
