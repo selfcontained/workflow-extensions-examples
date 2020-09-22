@@ -67,13 +67,10 @@ export const registerRandomStringStep = function (app) {
       });
     }
 
-    // Soooper secret way to test what happens when the step doesn't call workflows.updateSte
-    if (strings[0] === "burpadurp") {
-      return;
+    if (strings[0] !== "no-ack") {
+      // ack the view submission, we're all good there
+      ack();
     }
-
-    // ack the view submission, we're all good there
-    ack();
 
     // Now we need to update the step
     // Construct payload for updating the step
@@ -100,7 +97,9 @@ export const registerRandomStringStep = function (app) {
 
     // Call the api to save our step config - we do this prior to the ack of the view_submission
     try {
-      await app.client.apiCall("workflows.updateStep", params);
+      if (strings[1] !== "no-update") {
+        await app.client.apiCall("workflows.updateStep", params);
+      }
     } catch (e) {
       app.logger.error("error updating step: ", e.message);
     }

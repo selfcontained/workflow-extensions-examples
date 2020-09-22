@@ -10,7 +10,7 @@ export const renderStepConfig = function (state = {}) {
     callback_id: VIEW_CALLBACK_ID,
     blocks: renderBlocks(state),
     // testing out disabling the submit button
-    submit_disabled: true,
+    submit_disabled: false,
   };
 };
 
@@ -22,6 +22,18 @@ const renderBlocks = function ({ searchTerm = "" }) {
       text: {
         type: "mrkdwn",
         text: "Nothing to see here, just save",
+      },
+    },
+    {
+      type: "input",
+      block_id: "test_text_block",
+      element: {
+        type: "plain_text_input",
+        action_id: "test_text_block",
+      },
+      label: {
+        type: "plain_text",
+        text: "One",
       },
     },
     {

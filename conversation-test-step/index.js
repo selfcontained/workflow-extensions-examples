@@ -38,31 +38,34 @@ export const registerConversationTestStep = function (app) {
 
     const inputs = {
       no_filter: {
-        value: get(
-          view,
-          "state.values.no_filter.no_filter.selected_conversation"
-        ),
+        value:
+          get(view, "state.values.no_filter.no_filter.selected_conversation") ||
+          "",
       },
       im_only: {
-        value: get(view, "state.values.im_only.im_only.selected_conversation"),
+        value:
+          get(view, "state.values.im_only.im_only.selected_conversation") || "",
       },
       public_private: {
-        value: get(
-          view,
-          "state.values.public_private.public_private.selected_conversation"
-        ),
+        value:
+          get(
+            view,
+            "state.values.public_private.public_private.selected_conversation"
+          ) || "",
       },
       public_private_im: {
-        value: get(
-          view,
-          "state.values.public_private_im.public_private_im.selected_conversation"
-        ),
+        value:
+          get(
+            view,
+            "state.values.public_private_im.public_private_im.selected_conversation"
+          ) || "",
       },
       public_only: {
-        value: get(
-          view,
-          "state.values.public_only.public_only.selected_conversation"
-        ),
+        value:
+          get(
+            view,
+            "state.values.public_only.public_only.selected_conversation"
+          ) || "",
       },
     };
 
